@@ -8,6 +8,9 @@ class AddDonationsTable extends Migration
 {
     public function up()
     {
+        // Remover tabela antiga se existir (criada por migration anterior)
+        $this->forge->dropTable('donations', true);
+
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
