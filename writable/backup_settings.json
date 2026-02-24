@@ -1,0 +1,14 @@
+{
+    "keepLocalBackups": 3,
+    "keepRemoteBackups": 7,
+    "notificationEmail": "doarfazbem.com.br@gmail.com",
+    "notifyOnErrorOnly": true,
+    "includeFolders": [
+        "app",
+        "public\/uploads",
+        "public\/assets",
+        "writable\/uploads",
+        "public\/images",
+        "config"
+    ]
+}

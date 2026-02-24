@@ -1,0 +1,35 @@
+================================================================================
+   SISTEMA DE NOTIFICAÇÕES - DOARFAZBEM
+   Instalação Rápida em 2 Cliques
+================================================================================
+
+PASSO 1: INSTALAR CRON JOB
+---------------------------
+
+   Clique com botão direito em:  instalar-cron.ps1
+   Selecione: "Executar com PowerShell"
+
+   ✓ Isso vai configurar o envio automático a cada 5 minutos
+
+
+PASSO 2: TESTAR
+---------------
+
+   Clique com botão direito em:  testar-notificacoes.ps1
+   Selecione: "Executar com PowerShell"
+
+   ✓ Isso vai processar notificações pendentes
+
+
+PRONTO! ✓
+---------
+
+Agora o sistema está ativo e enviando notificações automaticamente.
+
+Para mais detalhes, abra:  INSTALAR_NOTIFICACOES.md
+
+
+================================================================================
+Sistema criado e configurado em: 2025-11-17
+Status: ✓ Backend completo | ✓ Firebase configurado | ✓ SMTP ativo
+================================================================================

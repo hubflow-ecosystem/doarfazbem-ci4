@@ -1,0 +1,57 @@
+name: Deploy DoarFazBem para Produção
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy via SSH
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 77.42.64.222
+          username: root
+          key: ${{ secrets.ECOSYSTEM_SSH_KEY }}
+          script: |
+            set -e
+            echo "=== Iniciando deploy DoarFazBem ==="
+
+            # Caminho do projeto
+            DEPLOY_PATH="/home/doarfazbem/htdocs/doarfazbem.com.br"
+
+            # Verificar se o diretório existe
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              echo "ERRO: Diretório $DEPLOY_PATH não existe. Execute o setup inicial."
+              exit 1
+            fi
+
+            cd "$DEPLOY_PATH"
+
+            echo "--- Fazendo git pull ---"
+            git pull origin main
+
+            echo "--- Instalando dependências PHP (sem dev) ---"
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "--- Limpando caches ---"
+            php spark cache:clear
+            php spark optimize:clear 2>/dev/null || true
+
+            echo "--- Rodando migrations ---"
+            php spark migrate --no-interaction
+
+            echo "--- Ajustando permissões ---"
+            chown -R doarfazbem:doarfazbem "$DEPLOY_PATH" 2>/dev/null || true
+            chmod -R 755 "$DEPLOY_PATH"
+            chmod -R 775 "$DEPLOY_PATH/writable"
+            chmod 640 "$DEPLOY_PATH/.env"
+
+            echo "=== Deploy concluído com sucesso! ==="

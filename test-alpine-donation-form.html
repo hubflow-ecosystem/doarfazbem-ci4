@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Donation Form</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="public/assets/js/alpine-components.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .section { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .row { display: flex; justify-content: space-between; margin: 8px 0; }
+        label { font-weight: bold; }
+        input[type="number"] { padding: 8px; width: 150px; font-size: 16px; }
+        input[type="checkbox"], input[type="radio"] { margin-right: 8px; }
+        .payment-method { display: inline-block; margin-right: 15px; }
+        .total { font-size: 24px; color: #059669; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Teste: Formulário de Doação</h1>
+
+    <div x-data="donationForm(103, 'medical')">
+        <div class="section">
+            <h2>Valor da Doação</h2>
+            <input type="number" x-model.number="amount" min="1" step="0.01" placeholder="Digite o valor">
+            <p>Valor: <span x-text="formatMoney(amount)"></span></p>
+        </div>
+
+        <div class="section">
+            <h2>Método de Pagamento</h2>
+            <div class="payment-method">
+                <input type="radio" x-model="paymentMethod" value="pix" id="pix">
+                <label for="pix">PIX (R$ 0,95)</label>
+            </div>
+            <div class="payment-method">
+                <input type="radio" x-model="paymentMethod" value="credit_card" id="card">
+                <label for="card">Cartão (R$ 0,49 + 1,99%)</label>
+            </div>
+            <div class="payment-method">
+                <input type="radio" x-model="paymentMethod" value="boleto" id="boleto">
+                <label for="boleto">Boleto (R$ 0,99)</label>
+            </div>
+            <p>Método escolhido: <span x-text="paymentMethodName"></span></p>
+        </div>
+
+        <div class="section">
+            <h2>Opções</h2>
+            <div>
+                <input type="checkbox" x-model="donorPaysGatewayFee" id="pays_fee">
+                <label for="pays_fee">Eu pago as taxas do gateway</label>
+            </div>
+            <div>
+                <input type="checkbox" x-model="donateToPlatform" id="platform_fee">
+                <label for="platform_fee">Doar para a plataforma (1%)</label>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Cálculo Detalhado</h2>
+            <div class="row">
+                <span>Valor da doação:</span>
+                <span x-text="formatMoney(amount)"></span>
+            </div>
+            <div class="row">
+                <span>Taxa do gateway (<span x-text="paymentMethodName"></span>):</span>
+                <span x-text="formatMoney(gatewayFee)"></span>
+            </div>
+            <div class="row">
+                <span>Taxa da plataforma (1%):</span>
+                <span x-text="formatMoney(platformFee)"></span>
+            </div>
+            <div class="row">
+                <span>Subtotal:</span>
+                <span x-text="formatMoney(subtotal)"></span>
+            </div>
+            <div class="row">
+                <span>Arredondamento:</span>
+                <span x-text="formatMoney(roundingExtra)"></span>
+            </div>
+            <div class="row">
+                <span><strong>TOTAL PAGO PELO DOADOR:</strong></span>
+                <span class="total" x-text="formatMoney(totalAmount)"></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Valores de Debug</h2>
+            <div class="row">
+                <span>amount:</span>
+                <span x-text="amount"></span>
+            </div>
+            <div class="row">
+                <span>donorPaysGatewayFee:</span>
+                <span x-text="donorPaysGatewayFee"></span>
+            </div>
+            <div class="row">
+                <span>donateToPlatform:</span>
+                <span x-text="donateToPlatform"></span>
+            </div>
+        </div>
+    </div>
+
+    <hr style="margin: 30px 0;">
+
+    <h2>Teste Esperado (R$ 50 com PIX, doador paga taxas, plataforma marcada):</h2>
+    <ul>
+        <li>Valor da doação: R$ 50,00</li>
+        <li>Taxa do gateway (PIX): R$ 0,95</li>
+        <li>Taxa da plataforma (1%): R$ 0,50 (1% de 50)</li>
+        <li>Subtotal: R$ 51,45</li>
+        <li>Arredondamento: R$ 0,55</li>
+        <li><strong>TOTAL: R$ 52,00</strong></li>
+    </ul>
+
+</body>
+</html>

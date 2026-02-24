@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoarFazBem.com.br - Wireframe de Desenvolvimento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            color: #1F2937;
+            background-color: #F9FAFB;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #10B981, #047857);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .progress-overview {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .overall-progress {
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #34D399);
+            transition: width 0.3s ease;
+        }
+        
+        .phase {
+            background: white;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .phase-header {
+            background: #3B82F6;
+            color: white;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .phase-header:hover {
+            background: #2563EB;
+        }
+        
+        .phase-content {
+            padding: 2rem;
+            display: none;
+        }
+        
+        .phase-content.active {
+            display: block;
+        }
+        
+        .subphase {
+            margin: 1.5rem 0;
+            border-left: 4px solid #10B981;
+            padding-left: 1rem;
+        }
+        
+        .subphase-header {
+            font-weight: 600;
+            color: #047857;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .status-progress {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .status-completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .task-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .task-item {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-checkbox {
+            margin-right: 0.75rem;
+            accent-color: #10B981;
+        }
+        
+        .reference-link {
+            color: #3B82F6;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+        
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: #F9FAFB;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .summary-table th,
+        .summary-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .summary-table th {
+            background: #F3F4F6;
+            font-weight: 600;
+        }
+        
+        .next-step {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .next-step h4 {
+            color: #92400E;
+            margin-bottom: 0.5rem;
+        }
+        
+        .toggle-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .tech-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #10B981;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .critical-note {
+            background: #FEE2E2;
+            border: 1px solid #EF4444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .critical-note h4 {
+            color: #DC2626;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🚀 PLATAFORMA DOARFAZBEM.COM.BR</h1>
+            <p>Wireframe de Desenvolvimento - Especificações Técnicas e Estratégicas</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Progresso Geral -->
+        <div class="progress-overview">
+            <div class="overall-progress">
+                <h2>📊 Progresso Geral do Projeto</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="overall-progress"></div>
+                </div>
+                <p><span id="overall-percentage">0%</span> Concluído</p>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <h4>🖥️ Backend</h4>
+                    <p>PHP 8.1+ com CodeIgniter 4</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🎨 Frontend</h4>
+                    <p>HTML5 + TailwindCSS + Alpine.js</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🗄️ Banco de Dados</h4>
+                    <p>MySQL 8.0</p>
+                </div>
+                <div class="tech-item">
+                    <h4>☁️ Servidor</h4>
+                    <p>Hertzner Cloud VPS + CloudPanel</p>
+                </div>
+                <div class="tech-item">
+                    <h4>💳 Pagamento</h4>
+                    <p>API Asaas</p>
+                </div>
+                <div class="tech-item">
+                    <h4>📱 WhatsApp</h4>
+                    <p>WhatsApp Business API</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 1: PREPARAÇÃO E SETUP -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>📋 FASE 1: PREPARAÇÃO E SETUP INICIAL</h2>
+                    <p>Configuração do ambiente e estrutura base</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <div class="critical-note">
+                    <h4>⚠️ IMPORTANTE:</h4>
+                    <p>Esta fase é fundamental! Não prossiga sem concluir todos os itens. Cada etapa depende da anterior.</p>
+                </div>
+
+                <!-- Subfase 1.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        1.1 - Configuração de Servidor e Domínio
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar servidor Hertzner Cloud VPS</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Instalar CloudPanel no servidor</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Apontar domínio doarfazbem.com.br para servidor</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar SSL (Let's Encrypt)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar CDN Cloudflare</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 3.1 - Stack Tecnológica (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 1.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        1.2 - Banco de Dados e Estrutura
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar banco MySQL 8.0</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar tabela 'users' conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar tabela 'campaigns' conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar tabela 'donations' conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar backup automático</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 3.3 - Banco de Dados (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 1.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        1.3 - Instalação CodeIgniter 4
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Instalar CodeIgniter 4 via Composer</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar arquivo .env com credenciais</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar conexão com banco de dados</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar estrutura de pastas conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar instalação e conexão</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 3.2 - Estrutura de Pastas (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 1.4 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        1.4 - Configuração TailwindCSS
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Instalar TailwindCSS via npm</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar arquivo tailwind.config.js</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar paleta de cores conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar classes CSS utilitárias personalizadas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar build e compilação CSS</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 4 - Design e UX/UI (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Servidor e Domínio</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Banco de Dados</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>CodeIgniter 4</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>TailwindCSS</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 1, iniciar Fase 2: Sistema de Autenticação e Usuários</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 2: SISTEMA DE AUTENTICAÇÃO -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>🔐 FASE 2: SISTEMA DE AUTENTICAÇÃO E USUÁRIOS</h2>
+                    <p>Login, cadastro, verificação de email e perfis</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 2.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        2.1 - Models e Estrutura Base de Usuários
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar UserModel.php com validações</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar hash de senhas (password_hash)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de sessões</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar validação de CPF e telefone</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.1 - Sistema de Usuários (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 2.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        2.2 - Controllers de Autenticação
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar User.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método register() conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método login()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método logout()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de recuperação de senha</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.1 - Cadastro de Usuários (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 2.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        2.3 - Views de Autenticação
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar layout base (header/footer)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar view auth/register.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar view auth/login.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar validações JavaScript</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Aplicar design system conforme especificação</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 4.3 - Layout e Componentes (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 2.4 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        2.4 - Sistema de Verificação de Email
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar SMTP (SendGrid/Mailgun)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar tabela email_verifications</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método verifyEmail() conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar templates de email</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar envio e verificação de emails</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.1 - Sistema de Verificação (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Models e Estrutura</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Controllers</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Views</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Verificação Email</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 2, iniciar Fase 3: Sistema de Campanhas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 3: SISTEMA DE CAMPANHAS -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>🎯 FASE 3: SISTEMA DE CAMPANHAS</h2>
+                    <p>Criação, edição, listagem e gestão de campanhas</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 3.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        3.1 - Model e Controller de Campanhas
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar CampaignModel.php com relacionamentos</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Campaign.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método create() conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar sistema de upload de imagens</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de categorização inteligente</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.2 - Sistema de Campanhas (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 3.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        3.2 - Views de Campanhas
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar view campaigns/create.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar view campaigns/list.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar view campaigns/show.php (página individual)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar card de campanha conforme design</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de busca e filtros</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 4.3 - Card de Campanha (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 3.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        3.3 - Homepage e Hero Section
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Home.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar Hero Section conforme design</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar listagem de campanhas em destaque</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar seção "Como Funciona"</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar footer com links importantes</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 4.3 - Hero Section (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Model e Controller</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Views Campanhas</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Homepage</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 3, iniciar Fase 4: Integração API Asaas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 4: INTEGRAÇÃO ASAAS -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>💳 FASE 4: INTEGRAÇÃO API ASAAS</h2>
+                    <p>Gateway de pagamento e split de valores</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 4.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        4.1 - Biblioteca AsaasAPI
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar AsaasAPI.php library conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método createCustomer()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método createPayment()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar método createWallet()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar API keys no .env</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 6.1 - Classe AsaasAPI (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 4.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        4.2 - Sistema de Webhooks
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Webhook.php controller conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar handlePaymentConfirmed()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar handlePaymentReceived()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar rota de webhook</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar webhook no ambiente sandbox</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 6.1 - Webhook Handler (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 4.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        4.3 - Testes de Integração
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar criação de clientes</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar pagamentos PIX</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar pagamentos cartão</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testar split de pagamentos</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Validar recebimento de webhooks</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Biblioteca AsaasAPI</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema Webhooks</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Testes Integração</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 4, iniciar Fase 5: Sistema de Doações</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 5: SISTEMA DE DOAÇÕES -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>💰 FASE 5: SISTEMA DE DOAÇÕES</h2>
+                    <p>Interface de doação e processamento de pagamentos</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 5.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        5.1 - Interface de Doação Frontend
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar formulário de doação conforme especificação HTML</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar JavaScript DonationHandler</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de cálculo de taxas dinâmico</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar opções de taxa por categoria</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar resumo de pagamento em tempo real</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.3 - Interface de Doação (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 5.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        5.2 - Backend de Processamento
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Payment.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar processDonation() conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar método calculateFees()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar prepareSplit()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar DonationModel.php</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.3 - Processamento Backend (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 5.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        5.3 - Sistema "Tudo ou Tudo"
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar comando ProcessExpiredCampaigns.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar processFailedCampaign() conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de redistribuição de valores</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar escolha de campanha médica pelos doadores</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar CRON job para processar campanhas expiradas</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 5.4 - Sistema "Tudo ou Tudo" (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Interface Frontend</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Backend Processamento</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema "Tudo ou Tudo"</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 5, iniciar Fase 6: Integração WhatsApp</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 6: INTEGRAÇÃO WHATSAPP -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>📱 FASE 6: INTEGRAÇÃO WHATSAPP</h2>
+                    <p>Notificações automáticas via WhatsApp Business API</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 6.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        6.1 - Configuração WhatsApp Business API
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar conta WhatsApp Business</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar access tokens</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar WhatsAppAPI.php library conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar métodos de envio de mensagens</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar templates de mensagem</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 7.1 - Biblioteca WhatsApp (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 6.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        6.2 - Sistema de Notificações
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar NotificationService.php conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar notifyNewDonation()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar notifyGoalReached()</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de alertas urgentes</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar resumo semanal</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 7.2 - NotificationService (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 6.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        6.3 - Interface de Configurações
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar página de configurações WhatsApp</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar escolha de tipos de notificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de teste de conectividade</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar validação de números</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 7.3 - Interface Configurações (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Configuração API</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema Notificações</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Interface Configurações</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 6, iniciar Fase 7: Dashboard e Relatórios</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 7: DASHBOARD E RELATÓRIOS -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>📊 FASE 7: DASHBOARD E RELATÓRIOS</h2>
+                    <p>Painéis de controle para usuários e administradores</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 7.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        7.1 - Dashboard do Criador
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Dashboard.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar listagem de campanhas do usuário</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar métricas de performance</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar gráficos de doações</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de edição de campanhas</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 7.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        7.2 - Dashboard do Doador
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar histórico de doações</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar sistema de badges/níveis</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar relatório de impacto</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar campanhas favoritas</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 7.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        7.3 - Dashboard Administrativo
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar Admin.php controller</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar métricas gerais da plataforma</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de moderação de campanhas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar relatórios financeiros</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dashboard Criador</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard Doador</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard Admin</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 7, iniciar Fase 8: Sistema de Publicidade</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 8: SISTEMA DE PUBLICIDADE -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>📢 FASE 8: SISTEMA DE PUBLICIDADE</h2>
+                    <p>Gestão de anúncios e métricas de performance</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 8.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        8.1 - Estrutura de Anúncios
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar tabelas advertisements e advertisement_campaigns</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar AdvertisementModel.php</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar sistema de segmentação</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 8.1 - Estrutura de Anúncios (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 8.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        8.2 - Sistema de Exibição
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar AdService.php conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar componente AdDisplay</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sistema de tracking de cliques</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 8.2 - AdService (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 8.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        8.3 - Interface de Gestão
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar painel administrativo de anúncios</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar CRUD de anúncios</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar relatórios de performance</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 8.3 - Interface de Gestão (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Estrutura Anúncios</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema Exibição</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Interface Gestão</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 8, iniciar Fase 9: SEO e Performance</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 9: SEO E PERFORMANCE -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>🚀 FASE 9: SEO E PERFORMANCE</h2>
+                    <p>Otimização para mecanismos de busca e performance</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 9.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        9.1 - SEO On-Page
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar meta tags dinâmicas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar URLs amigáveis</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar Schema.org markup</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar sitemap XML</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar robots.txt</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 9.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        9.2 - Performance e Cache
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar cache de páginas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Otimizar compressão de imagens</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Minificar CSS e JavaScript</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar lazy loading</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar Gzip compression</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 9.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        9.3 - Analytics e Monitoramento
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar Google Analytics 4</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar Google Search Console</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar AnalyticsService conforme especificação</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar tracking de eventos</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 9.5 - Analytics e Métricas (nas instruções)</p>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SEO On-Page</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Performance Cache</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Analytics</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 9, iniciar Fase 10: Testes e Segurança</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 10: TESTES E SEGURANÇA -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>🔒 FASE 10: TESTES E SEGURANÇA</h2>
+                    <p>Testes completos e implementação de segurança</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 10.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        10.1 - Testes Funcionais
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de cadastro e login</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de criação de campanhas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de doações end-to-end</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de notificações WhatsApp</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de webhooks Asaas</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 10.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        10.2 - Testes de Segurança
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes SQL Injection</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes XSS prevention</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de upload de arquivos</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de autenticação e autorização</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Auditoria de exposição de dados</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 10.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        10.3 - Testes de Performance
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de carga com múltiplos usuários</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de velocidade de páginas</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes em dispositivos móveis</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Testes de compatibilidade browsers</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Testes Funcionais</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Testes Segurança</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Testes Performance</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 10, iniciar Fase 11: Preparação para Lançamento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 11: PREPARAÇÃO PARA LANÇAMENTO -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <div>
+                    <h2>🎉 FASE 11: PREPARAÇÃO PARA LANÇAMENTO</h2>
+                    <p>Documentação, legal e marketing de pré-lançamento</p>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="phase-content">
+                <!-- Subfase 11.1 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        11.1 - Legal e Compliance
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar termos de uso completos</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Elaborar política de privacidade (LGPD)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar política de reembolso</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Adicionar disclaimer médico</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Consultoria jurídica especializada</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 11.2 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        11.2 - Documentação e Suporte
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar documentação técnica completa</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Elaborar manual do usuário</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar FAQ detalhado</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar sistema de suporte</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Treinar equipe de atendimento</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Subfase 11.3 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        11.3 - Marketing Preparatório
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar blog com conteúdo inicial</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar redes sociais</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar identidade visual final</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Desenvolver materiais promocionais</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar landing page de captura</span>
+                        </li>
+                    </ul>
+                    <p class="reference-link">📖 Referência: Seção 9 - Estratégias de Marketing (nas instruções)</p>
+                </div>
+
+                <!-- Subfase 11.4 -->
+                <div class="subphase">
+                    <div class="subphase-header">
+                        11.4 - Infraestrutura e Backup
+                        <span class="status-badge status-pending">Pendente</span>
+                    </div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar monitoramento (uptime, errors)</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Implementar backup automático</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Configurar logs centralizados</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Criar alertas críticos</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="updateProgress()">
+                            <span>Elaborar plano de incident response</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>% Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Legal e Compliance</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Documentação</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing Preparatório</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Infraestrutura</td>
+                            <td>Pendente</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="next-step">
+                    <h4>🎯 Próximo Passo:</h4>
+                    <p>Após concluir a Fase 11, iniciar LANÇAMENTO OFICIAL! 🚀</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePhase(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            content.classList.toggle('active');
+            icon.classList.toggle('rotated');
+        }
+
+        function updateProgress() {
+            const totalTasks = document.querySelectorAll('.task-checkbox').length;
+            const completedTasks = document.querySelectorAll('.task-checkbox:checked').length;
+            const percentage = Math.round((completedTasks / totalTasks) * 100);
+            
+            document.getElementById('overall-progress').style.width = percentage + '%';
+            document.getElementById('overall-percentage').textContent = percentage + '%';
+            
+            // Atualizar status das subfases
+            document.querySelectorAll('.subphase').forEach(subphase => {
+                const subphaseTasks = subphase.querySelectorAll('.task-checkbox');
+                const subphaseCompleted = subphase.querySelectorAll('.task-checkbox:checked');
+                const badge = subphase.querySelector('.status-badge');
+                
+                if (subphaseCompleted.length === 0) {
+                    badge.className = 'status-badge status-pending';
+                    badge.textContent = 'Pendente';
+                } else if (subphaseCompleted.length === subphaseTasks.length) {
+                    badge.className = 'status-badge status-completed';
+                    badge.textContent = 'Concluído';
+                } else {
+                    badge.className = 'status-badge status-progress';
+                    badge.textContent = 'Em Progresso';
+                }
+            });
+            
+            // Salvar progresso no localStorage
+            const checkedStates = [];
+            document.querySelectorAll('.task-checkbox').forEach((checkbox, index) => {
+                checkedStates[index] = checkbox.checked;
+            });
+            localStorage.setItem('doarfazbem-progress', JSON.stringify(checkedStates));
+        }
+
+        // Carregar progresso salvo
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('doarfazbem-progress');
+            if (savedProgress) {
+                const checkedStates = JSON.parse(savedProgress);
+                document.querySelectorAll('.task-checkbox').forEach((checkbox, index) => {
+                    if (checkedStates[index]) {
+                        checkbox.checked = true;
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            
+            // Adicionar event listeners para checkboxes
+            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+        });
+    </script>
+</body>
+</html>

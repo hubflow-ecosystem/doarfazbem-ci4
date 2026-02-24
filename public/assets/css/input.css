@@ -1,0 +1,171 @@
+/*
+ * DOAR FAZ BEM - Estilos Base
+ * Tailwind CSS - Arquivo de entrada
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+ * CAMADA BASE - Estilos Globais
+ * ===================================================== */
+
+@layer base {
+  /* Fonte padrão do Google Fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans text-gray-900 antialiased;
+  }
+
+  /* Links padrão */
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  /* Melhorar legibilidade de parágrafos */
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Inputs e formulários com melhor acessibilidade */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply ring-2 ring-primary-500 ring-offset-2 outline-none;
+  }
+}
+
+/* =====================================================
+ * CAMADA COMPONENTS - Componentes Reutilizáveis
+ * ===================================================== */
+
+@layer components {
+  /* Botão Primário - Verde (Doar Agora) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg shadow-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Botão Secundário - Azul */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-secondary-500 text-white font-semibold rounded-lg shadow-md hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Botão Outline */
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-semibold border-2 border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Card de Campanha */
+  .campaign-card {
+    @apply bg-white rounded-xl shadow-card hover:shadow-card-hover transition-shadow duration-300 overflow-hidden;
+  }
+
+  /* Badge de Categoria */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider;
+  }
+
+  .badge-medica {
+    @apply bg-urgent-100 text-urgent-800;
+  }
+
+  .badge-social {
+    @apply bg-primary-100 text-primary-800;
+  }
+
+  .badge-criativa {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .badge-negocio {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .badge-educacao {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  /* Badge de Status */
+  .badge-urgent {
+    @apply bg-urgent-500 text-white;
+  }
+
+  .badge-featured {
+    @apply bg-secondary-500 text-white;
+  }
+
+  .badge-verified {
+    @apply bg-green-500 text-white;
+  }
+
+  /* Input de Formulário */
+  .form-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+  }
+
+  /* Label de Formulário */
+  .form-label {
+    @apply block text-sm font-semibold text-gray-700 mb-2;
+  }
+
+  /* Mensagem de Erro */
+  .form-error {
+    @apply text-sm text-red-600 mt-1;
+  }
+
+  /* Barra de Progresso */
+  .progress-bar {
+    @apply w-full h-3 bg-gray-200 rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-500 ease-out;
+  }
+
+  /* Container Responsivo */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Alerta de Sucesso */
+  .alert-success {
+    @apply bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg;
+  }
+
+  /* Alerta de Erro */
+  .alert-error {
+    @apply bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg;
+  }
+
+  /* Alerta de Info */
+  .alert-info {
+    @apply bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg;
+  }
+}
+
+/* =====================================================
+ * CAMADA UTILITIES - Utilitários Customizados
+ * ===================================================== */
+
+@layer utilities {
+  /* Gradiente de Hero Section */
+  .hero-gradient {
+    @apply bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-600;
+  }
+
+  /* Texto com Gradiente */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md;
+  }
+}

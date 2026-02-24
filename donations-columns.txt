@@ -1,0 +1,24 @@
+Colunas da tabela donations:
+id
+campaign_id
+user_id
+donor_name
+donor_email
+amount
+charged_amount
+platform_fee
+payment_gateway_fee
+net_amount
+donor_pays_fees
+payment_method
+asaas_payment_id
+status
+is_anonymous
+message
+pix_qr_code
+pix_copy_paste
+boleto_url
+boleto_barcode
+paid_at
+created_at
+updated_at

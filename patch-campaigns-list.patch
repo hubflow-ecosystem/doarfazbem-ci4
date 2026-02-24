@@ -1,0 +1,32 @@
+warning: in the working copy of 'doarfazbem/app/Views/campaigns/list.php', LF will be replaced by CRLF the next time Git touches it
+diff --git a/doarfazbem/app/Views/campaigns/list.php b/doarfazbem/app/Views/campaigns/list.php
+index c79145b..87858d7 100644
+--- a/doarfazbem/app/Views/campaigns/list.php
++++ b/doarfazbem/app/Views/campaigns/list.php
+@@ -2,8 +2,9 @@
+ 
+ <?= $this->section('content') ?>
+ 
++<div x-data="campaignFilter(<?= json_encode($campaigns) ?>)">
+ <!-- Breadcrumb e Filtros -->
+-<section class="bg-white border-b" x-data="campaignFilter(<?= json_encode($campaigns) ?>)">
++<section class="bg-white border-b">
+     <div class="container-custom py-6">
+         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+             <div>
+@@ -81,7 +82,7 @@
+ </section>
+ 
+ <!-- Grid de Campanhas -->
+-<section class="py-12" x-data="campaignFilter(<?= json_encode($campaigns) ?>)">
++<section class="py-12">
+     <div class="container-custom">
+         <!-- Empty State -->
+         <div x-show="filteredCampaigns.length === 0" class="text-center py-16">
+@@ -159,5 +160,6 @@
+         </div>
+     </div>
+ </section>
++</div>
+ 
+ <?= $this->endSection() ?>

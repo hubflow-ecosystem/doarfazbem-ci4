@@ -1,0 +1,78 @@
+# CodeIgniter 4
+/writable/cache/*
+!/writable/cache/index.html
+
+/writable/logs/*
+!/writable/logs/index.html
+
+/writable/session/*
+!/writable/session/index.html
+
+/writable/uploads/*
+!/writable/uploads/index.html
+
+# Environment files - SEGURANÇA CRÍTICA
+.env
+.env.*
+.env.production
+.env.backup.*
+!env
+
+# Firebase credentials - SEGURANÇA CRÍTICA
+firebase-credentials.json
+/config/firebase-credentials.json
+
+# Sensitive configuration files - SEGURANÇA
+/config/*.json
+/config/*.key
+/config/*.pem
+/config/*.p12
+
+# Composer
+/vendor/
+
+# Node
+/node_modules/
+npm-debug.log
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Public uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Compiled CSS
+/public/assets/css/output.css
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# User-specific files
+composer.lock
+psalm-autoload.php
+preload.php
+
+# Test files
+phpunit.xml
+.phpunit.result.cache
+
+# Claude files (optional)
+.claude/
+
+# Backup files
+*.sql
+*.backup

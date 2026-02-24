@@ -1,0 +1,138 @@
+========================================
+PASSO 3: ROTACIONAR CREDENCIAIS
+========================================
+
+IMPORTANTE: Você precisa rotacionar (trocar) as seguintes credenciais porque foram expostas:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 1. ASAAS (Gateway de Pagamento)                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+🔗 Acesse: https://www.asaas.com/login
+📧 Login: Sua conta Asaas
+🔑 Vá em: Integrações > API > Minhas Chaves de API
+⚡ Ações:
+   1. REVOGAR a chave antiga (termina em ...OGM3MWRl)
+   2. GERAR nova chave de API
+   3. COPIAR a nova chave
+   4. COLAR no arquivo .env na linha:
+      ASAAS_API_KEY = [NOVA_CHAVE_AQUI]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 2. GOOGLE OAUTH (Login Social)                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+🔗 Acesse: https://console.cloud.google.com/apis/credentials
+📧 Login: Sua conta Google
+🔑 Projeto: doarfazbem (ou crie um novo)
+⚡ Ações:
+   1. Clique no cliente OAuth existente
+   2. Clique em "DELETE" ou "Excluir"
+   3. Clique em "CREATE CREDENTIALS" > "OAuth client ID"
+   4. Tipo: "Web application"
+   5. Nome: "DoarFazBem - Produção"
+   6. Authorized redirect URIs:
+      - https://doarfazbem.com.br/auth/google/callback
+      - http://doarfazbem.ai/auth/google/callback (apenas dev)
+   7. COPIAR o novo Client ID e Client Secret
+   8. COLAR no arquivo .env:
+      GOOGLE_CLIENT_ID = [NOVO_CLIENT_ID]
+      GOOGLE_CLIENT_SECRET = [NOVO_CLIENT_SECRET]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 3. FIREBASE (Notificações Push)                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+🔗 Acesse: https://console.firebase.google.com
+📧 Login: Sua conta Google
+🔑 Projeto: doarfazbem-4e506
+⚡ Ações:
+   1. Clique em "Project Settings" (ícone engrenagem)
+   2. Vá em "Service Accounts"
+   3. Clique em "Manage service account permissions"
+   4. Encontre "firebase-adminsdk-fbsvc@doarfazbem-4e506.iam.gserviceaccount.com"
+   5. Clique nos 3 pontinhos > "Manage keys"
+   6. DELETE a chave antiga (ID: 55a923088d8400b7...)
+   7. Clique em "ADD KEY" > "Create new key"
+   8. Formato: JSON
+   9. BAIXAR o arquivo JSON
+   10. RENOMEAR para "firebase-credentials.json"
+   11. MOVER para a pasta: c:\laragon\www\doarfazbem\config\
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 4. reCAPTCHA (Anti-spam)                                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+🔗 Acesse: https://www.google.com/recaptcha/admin
+📧 Login: Sua conta Google
+🔑 Site: DoarFazBem
+⚡ Ações:
+   1. Encontre o site existente ou crie novo
+   2. DELETE o site antigo (chave exposta)
+   3. Clique em "+"
+   4. Nome: DoarFazBem
+   5. Tipo: reCAPTCHA v3
+   6. Domínios:
+      - doarfazbem.com.br
+      - doarfazbem.ai
+   7. COPIAR Site Key e Secret Key
+   8. COLAR no arquivo .env:
+      RECAPTCHA_SITE_KEY = [NOVA_SITE_KEY]
+      RECAPTCHA_SECRET_KEY = [NOVA_SECRET_KEY]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 5. EMAIL SMTP (StackMail)                                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+📧 Email: contato@doarfazbem.com.br
+🔑 Host: smtp.stackmail.com
+⚡ Ações:
+   1. Acesse o painel da StackMail
+   2. Vá em Configurações > Alterar Senha
+   3. GERAR nova senha forte
+   4. COLAR no arquivo .env:
+      email.SMTPPass = [NOVA_SENHA]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 6. GOOGLE MAPS API                                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+🔗 Acesse: https://console.cloud.google.com/google/maps-apis/credentials
+📧 Login: Sua conta Google
+⚡ Ações:
+   1. Encontre a API Key existente
+   2. Clique em "RESTRICT KEY"
+   3. Application restrictions: HTTP referrers
+   4. Website restrictions:
+      - https://doarfazbem.com.br/*
+      - http://doarfazbem.ai/*
+   5. API restrictions: Google Maps JavaScript API
+   6. SALVAR
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 7. ENCRYPTION KEY (CodeIgniter)                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+⚡ Execute no terminal:
+   cd c:\laragon\www\doarfazbem
+   php spark key:generate
+
+   Isso vai gerar uma nova chave e atualizar automaticamente o .env
+
+========================================
+CHECKLIST - Marque quando concluir
+========================================
+
+[ ] 1. Asaas API Key rotacionada
+[ ] 2. Google OAuth rotacionado
+[ ] 3. Firebase service account rotacionado
+[ ] 4. reCAPTCHA rotacionado
+[ ] 5. Email SMTP senha alterada
+[ ] 6. Google Maps API restringida
+[ ] 7. Encryption key gerada
+
+========================================
+APÓS CONCLUIR TUDO
+========================================
+
+Execute: SEGURANCA-PASSO-4.bat
