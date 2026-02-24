@@ -10,44 +10,56 @@ use CodeIgniter\Database\Migration;
  */
 class AddPerformanceIndices extends Migration
 {
+    /**
+     * Cria índice de forma segura (sem IF NOT EXISTS - não suportado no MySQL para índices)
+     */
+    private function createIndex(string $name, string $table, string $columns): void
+    {
+        try {
+            $this->db->query("CREATE INDEX {$name} ON {$table}({$columns})");
+        } catch (\Exception $e) {
+            // Índice já existe - ignorar
+        }
+    }
+
     public function up()
     {
-        // Indices para tabela donations
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_donations_status ON donations(status)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_donations_campaign_status ON donations(campaign_id, status)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_donations_user_id ON donations(user_id)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_donations_created_at ON donations(created_at)');
+        // Índices para tabela donations (payment_status, não status)
+        $this->createIndex('idx_donations_payment_status', 'donations', 'payment_status');
+        $this->createIndex('idx_donations_campaign_status', 'donations', 'campaign_id, payment_status');
+        $this->createIndex('idx_donations_user_id', 'donations', 'user_id');
+        $this->createIndex('idx_donations_created_at', 'donations', 'created_at');
 
-        // Indices para tabela campaigns
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_campaigns_user_id ON campaigns(user_id)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_campaigns_category ON campaigns(category)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_campaigns_featured ON campaigns(is_featured)');
+        // Índices para tabela campaigns
+        $this->createIndex('idx_campaigns_status', 'campaigns', 'status');
+        $this->createIndex('idx_campaigns_user_id', 'campaigns', 'user_id');
+        $this->createIndex('idx_campaigns_category', 'campaigns', 'category');
+        $this->createIndex('idx_campaigns_featured', 'campaigns', 'is_featured');
 
-        // Indices para tabela raffle_purchases
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_raffle_purchases_status ON raffle_purchases(payment_status)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_raffle_purchases_raffle ON raffle_purchases(raffle_id)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_raffle_purchases_user ON raffle_purchases(user_id)');
+        // Índices para tabela raffle_purchases
+        $this->createIndex('idx_raffle_purchases_status', 'raffle_purchases', 'payment_status');
+        $this->createIndex('idx_raffle_purchases_raffle', 'raffle_purchases', 'raffle_id');
+        $this->createIndex('idx_raffle_purchases_user', 'raffle_purchases', 'user_id');
 
-        // Indices para tabela raffle_numbers
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_raffle_numbers_status ON raffle_numbers(status)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_raffle_numbers_raffle_status ON raffle_numbers(raffle_id, status)');
+        // Índices para tabela raffle_numbers
+        $this->createIndex('idx_raffle_numbers_status', 'raffle_numbers', 'status');
+        $this->createIndex('idx_raffle_numbers_raffle_status', 'raffle_numbers', 'raffle_id, status');
 
-        // Indices para tabela users
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_users_status ON users(status)');
+        // Índices para tabela users
+        $this->createIndex('idx_users_email', 'users', 'email');
+        $this->createIndex('idx_users_role', 'users', 'role');
+        $this->createIndex('idx_users_status', 'users', 'status');
 
-        // Indices para tabela audit_logs (indice composto para consultas frequentes)
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_audit_logs_action_created ON audit_logs(action, created_at)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_audit_logs_user_action ON audit_logs(user_id, action)');
+        // Índices para tabela audit_logs
+        $this->createIndex('idx_audit_logs_action_created', 'audit_logs', 'action, created_at');
+        $this->createIndex('idx_audit_logs_user_action', 'audit_logs', 'user_id, action');
 
-        // Indices para tabela asaas_transactions
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_asaas_transactions_payment_id ON asaas_transactions(asaas_payment_id)');
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_asaas_transactions_status ON asaas_transactions(status)');
+        // Índices para tabela asaas_transactions
+        $this->createIndex('idx_asaas_transactions_payment_id', 'asaas_transactions', 'asaas_payment_id');
+        $this->createIndex('idx_asaas_transactions_status', 'asaas_transactions', 'status');
 
-        // Indice para webhook_processed (ja deve ter unique, mas garantir indice de busca)
-        $this->db->query('CREATE INDEX IF NOT EXISTS idx_webhook_processed_source ON webhook_processed(source)');
+        // Índice para webhook_processed
+        $this->createIndex('idx_webhook_processed_source', 'webhook_processed', 'source');
     }
 
     public function down()
