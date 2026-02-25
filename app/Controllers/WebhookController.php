@@ -4,17 +4,20 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use App\Libraries\AsaasService;
+use App\Libraries\SMSFlowService;
 use App\Models\AuditLogModel;
 
 class WebhookController extends Controller
 {
     protected $db;
     protected $auditLog;
+    protected $sms;
 
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
+        $this->db       = \Config\Database::connect();
         $this->auditLog = new AuditLogModel();
+        $this->sms      = new SMSFlowService();
     }
 
     /**
@@ -651,97 +654,221 @@ class WebhookController extends Controller
     }
 
     /**
-     * Envia notificação para o doador
+     * Envia notificação para o doador (push + SMS se tiver telefone)
      */
     private function sendDonorNotification(array $donation, ?array $campaign)
     {
         if (!$campaign) return;
 
+        // Push notification (banco)
         $notificationData = [
-            'user_id' => $donation['user_id'],
-            'campaign_id' => $campaign['id'],
-            'donation_id' => $donation['id'],
-            'type' => 'donation_confirmed',
-            'title' => 'Doação confirmada!',
-            'body' => "Sua doação de R$ " . number_format($donation['amount'], 2, ',', '.') . " para '{$campaign['title']}' foi confirmada. Obrigado por fazer o bem!",
-            'icon' => base_url('assets/icons/heart-success.png'),
-            'url' => base_url("donations/{$donation['id']}"),
-            'data' => json_encode([
+            'user_id'    => $donation['user_id'],
+            'campaign_id'=> $campaign['id'],
+            'donation_id'=> $donation['id'],
+            'type'       => 'donation_confirmed',
+            'title'      => 'Doação confirmada!',
+            'body'       => "Sua doação de R$ " . number_format($donation['amount'], 2, ',', '.') . " para '{$campaign['title']}' foi confirmada. Obrigado por fazer o bem!",
+            'icon'       => base_url('assets/icons/heart-success.png'),
+            'url'        => base_url("donations/{$donation['id']}"),
+            'data'       => json_encode([
                 'donation_id' => $donation['id'],
                 'campaign_id' => $campaign['id'],
-                'amount' => $donation['amount']
+                'amount'      => $donation['amount'],
             ]),
-            'channel' => 'push',
-            'status' => 'sent',
-            'created_at' => date('Y-m-d H:i:s')
+            'channel'    => 'push',
+            'status'     => 'sent',
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         $this->db->table('notifications')->insert($notificationData);
 
-        // TODO: Enviar push notification real via Firebase (será implementado na próxima fase)
+        // SMS ao doador (apenas se tiver usuário e telefone cadastrado)
+        if (!empty($donation['user_id']) && $this->sms->isConfigured()) {
+            $user = $this->db->table('users')
+                ->select('name, phone')
+                ->where('id', $donation['user_id'])
+                ->get()->getRowArray();
+
+            if ($user && !empty($user['phone'])) {
+                $slug = $campaign['slug'] ?? '';
+                $result = $this->sms->sendDonationConfirmed(
+                    $user['phone'],
+                    $user['name'],
+                    $campaign['title'],
+                    (float) $donation['amount'],
+                    $slug,
+                    (int) $donation['id']
+                );
+                log_message('info', "[SMS] Doador notificado por SMS: " . ($result['success'] ? 'OK' : ($result['error'] ?? 'falha')));
+            }
+        }
+
         log_message('info', "Notificação enviada ao doador {$donation['user_id']}");
     }
 
     /**
-     * Envia notificação para o criador da campanha
+     * Envia notificação para o criador da campanha (push + SMS)
+     * Também verifica se atingiu marco (25/50/75%) ou meta (100%)
      */
     private function sendCampaignOwnerNotification(array $donation, ?array $campaign)
     {
         if (!$campaign) return;
 
-        $donorName = $donation['is_anonymous'] ? 'Doador Anônimo' : $this->getUserName($donation['user_id']);
+        $donorName = ($donation['is_anonymous'] ?? 0) ? 'Doador Anônimo' : $this->getUserName($donation['user_id']);
 
+        // Push notification (banco)
         $notificationData = [
-            'user_id' => $campaign['user_id'],
-            'campaign_id' => $campaign['id'],
-            'donation_id' => $donation['id'],
-            'type' => 'new_donation',
-            'title' => 'Nova doação recebida!',
-            'body' => "{$donorName} doou R$ " . number_format($donation['amount'], 2, ',', '.') . " para sua campanha '{$campaign['title']}'",
-            'icon' => base_url('assets/icons/donation-received.png'),
-            'url' => base_url("campaigns/{$campaign['id']}/donations"),
-            'data' => json_encode([
+            'user_id'    => $campaign['user_id'],
+            'campaign_id'=> $campaign['id'],
+            'donation_id'=> $donation['id'],
+            'type'       => 'new_donation',
+            'title'      => 'Nova doação recebida!',
+            'body'       => "{$donorName} doou R$ " . number_format($donation['amount'], 2, ',', '.') . " para sua campanha '{$campaign['title']}'",
+            'icon'       => base_url('assets/icons/donation-received.png'),
+            'url'        => base_url("campaigns/{$campaign['id']}/donations"),
+            'data'       => json_encode([
                 'donation_id' => $donation['id'],
                 'campaign_id' => $campaign['id'],
-                'amount' => $donation['amount']
+                'amount'      => $donation['amount'],
             ]),
-            'channel' => 'push',
-            'status' => 'sent',
-            'created_at' => date('Y-m-d H:i:s')
+            'channel'    => 'push',
+            'status'     => 'sent',
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         $this->db->table('notifications')->insert($notificationData);
+
+        // SMS ao criador da campanha
+        if ($this->sms->isConfigured()) {
+            $creator = $this->db->table('users')
+                ->select('name, phone')
+                ->where('id', $campaign['user_id'])
+                ->get()->getRowArray();
+
+            if ($creator && !empty($creator['phone'])) {
+                // Valores atualizados após essa doação
+                $totalRaised = (float) ($campaign['current_amount'] ?? 0);
+                $goalAmount  = (float) ($campaign['goal_amount'] ?? 0);
+
+                // Verifica se atingiu meta (100%)
+                if ($goalAmount > 0 && $totalRaised >= $goalAmount) {
+                    $donorsCount = (int) $this->db->table('donations')
+                        ->where('campaign_id', $campaign['id'])
+                        ->where('status', 'received')
+                        ->countAllResults();
+
+                    $result = $this->sms->sendCampaignGoalReached(
+                        $creator['phone'],
+                        $creator['name'],
+                        $campaign['title'],
+                        $totalRaised,
+                        $donorsCount,
+                        (int) $campaign['id']
+                    );
+                    log_message('info', "[SMS] Meta atingida — SMS ao criador: " . ($result['success'] ? 'OK' : ($result['error'] ?? 'falha')));
+                } else {
+                    // Verifica se atingiu marco 25/50/75% (e só envia uma vez por marco)
+                    $progress   = $goalAmount > 0 ? ($totalRaised / $goalAmount) * 100 : 0;
+                    $milestones = [75, 50, 25];
+
+                    foreach ($milestones as $milestone) {
+                        if ($progress >= $milestone) {
+                            // Verifica se esse marco já foi notificado
+                            $alreadySent = $this->db->table('notifications')
+                                ->where('campaign_id', $campaign['id'])
+                                ->where('type', "milestone_{$milestone}")
+                                ->countAllResults() > 0;
+
+                            if (!$alreadySent) {
+                                $result = $this->sms->sendCampaignMilestone(
+                                    $creator['phone'],
+                                    $creator['name'],
+                                    $campaign['title'],
+                                    $milestone,
+                                    $totalRaised,
+                                    (int) $campaign['id']
+                                );
+                                log_message('info', "[SMS] Marco {$milestone}% — SMS ao criador: " . ($result['success'] ? 'OK' : ($result['error'] ?? 'falha')));
+
+                                // Registra marco como notificado
+                                $this->db->table('notifications')->insert([
+                                    'user_id'    => $campaign['user_id'],
+                                    'campaign_id'=> $campaign['id'],
+                                    'type'       => "milestone_{$milestone}",
+                                    'title'      => "Marco {$milestone}% atingido",
+                                    'body'       => "Campanha '{$campaign['title']}' atingiu {$milestone}%",
+                                    'channel'    => 'sms',
+                                    'status'     => 'sent',
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                ]);
+                            }
+                            break; // Só notifica o maior marco ainda não notificado
+                        }
+                    }
+
+                    // Sempre envia SMS de nova doação (independente de marco)
+                    $result = $this->sms->sendCreatorNewDonation(
+                        $creator['phone'],
+                        $creator['name'],
+                        $campaign['title'],
+                        (float) $donation['amount'],
+                        $totalRaised,
+                        $goalAmount,
+                        (int) $campaign['id']
+                    );
+                    log_message('info', "[SMS] Criador notificado de nova doação: " . ($result['success'] ? 'OK' : ($result['error'] ?? 'falha')));
+                }
+            }
+        }
 
         log_message('info', "Notificação enviada ao criador da campanha {$campaign['user_id']}");
     }
 
     /**
-     * Envia notificação de estorno
+     * Envia notificação de estorno (push + SMS)
      */
     private function sendRefundNotification(array $donation, ?array $campaign)
     {
         if (!$campaign) return;
 
+        // Push notification (banco)
         $notificationData = [
-            'user_id' => $donation['user_id'],
-            'campaign_id' => $campaign['id'],
-            'donation_id' => $donation['id'],
-            'type' => 'donation_refunded',
-            'title' => 'Doação estornada',
-            'body' => "Sua doação de R$ " . number_format($donation['amount'], 2, ',', '.') . " para '{$campaign['title']}' foi estornada.",
-            'icon' => base_url('assets/icons/refund.png'),
-            'url' => base_url("donations/{$donation['id']}"),
-            'data' => json_encode([
+            'user_id'    => $donation['user_id'],
+            'campaign_id'=> $campaign['id'],
+            'donation_id'=> $donation['id'],
+            'type'       => 'donation_refunded',
+            'title'      => 'Doação estornada',
+            'body'       => "Sua doação de R$ " . number_format($donation['amount'], 2, ',', '.') . " para '{$campaign['title']}' foi estornada.",
+            'icon'       => base_url('assets/icons/refund.png'),
+            'url'        => base_url("donations/{$donation['id']}"),
+            'data'       => json_encode([
                 'donation_id' => $donation['id'],
                 'campaign_id' => $campaign['id'],
-                'amount' => $donation['amount']
+                'amount'      => $donation['amount'],
             ]),
-            'channel' => 'push',
-            'status' => 'sent',
-            'created_at' => date('Y-m-d H:i:s')
+            'channel'    => 'push',
+            'status'     => 'sent',
+            'created_at' => date('Y-m-d H:i:s'),
         ];
 
         $this->db->table('notifications')->insert($notificationData);
+
+        // SMS ao doador informando o estorno
+        if (!empty($donation['user_id']) && $this->sms->isConfigured()) {
+            $user = $this->db->table('users')
+                ->select('name, phone')
+                ->where('id', $donation['user_id'])
+                ->get()->getRowArray();
+
+            if ($user && !empty($user['phone'])) {
+                $this->sms->sendDonationRefunded(
+                    $user['phone'],
+                    $user['name'],
+                    (float) $donation['amount'],
+                    $campaign['title']
+                );
+            }
+        }
     }
 
     /**

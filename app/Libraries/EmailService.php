@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use Config\Email as EmailConfig;
+use App\Libraries\SMSFlowService;
 
 /**
  * Serviço de Envio de Emails
@@ -13,11 +14,13 @@ class EmailService
 {
     protected $email;
     protected $config;
+    protected $sms;
 
     public function __construct()
     {
-        $this->email = \Config\Services::email();
+        $this->email  = \Config\Services::email();
         $this->config = config('Email');
+        $this->sms    = new SMSFlowService();
     }
 
     /**
@@ -165,7 +168,7 @@ class EmailService
     }
 
     /**
-     * Envia email de boas-vindas para novo usuário
+     * Envia email de boas-vindas para novo usuário + SMS se tiver telefone
      */
     public function sendWelcomeEmail(array $user): bool
     {
@@ -181,11 +184,100 @@ class EmailService
             $this->email->setMessage($message);
             $this->email->setMailType('html');
 
-            return $this->email->send();
+            $emailResult = $this->email->send();
+
+            // SMS de boas-vindas (paralelo ao email)
+            if (!empty($user['phone']) && $this->sms->isConfigured()) {
+                $this->sms->sendWelcome($user['phone'], $user['name']);
+            }
+
+            return $emailResult;
         } catch (\Exception $e) {
             log_message('error', 'Erro ao enviar email de boas-vindas: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Notifica criador que a campanha foi aprovada (email + SMS)
+     *
+     * @param array $campaign Dados da campanha (title, slug)
+     * @param array $creator  Dados do criador (email, name, phone)
+     */
+    public function sendCampaignApprovedNotification(array $campaign, array $creator): bool
+    {
+        // Email
+        try {
+            $this->email->setFrom($this->config->fromEmail, $this->config->fromName);
+            $this->email->setTo($creator['email']);
+            $this->email->setSubject('Campanha Aprovada! - DoarFazBem');
+
+            $message = view('emails/campaign_approved', [
+                'campaign' => $campaign,
+                'creator'  => $creator,
+            ]);
+
+            $this->email->setMessage($message);
+            $this->email->setMailType('html');
+            $emailResult = $this->email->send();
+        } catch (\Exception $e) {
+            log_message('error', 'Erro ao enviar email campanha aprovada: ' . $e->getMessage());
+            $emailResult = false;
+        }
+
+        // SMS de campanha aprovada
+        if (!empty($creator['phone']) && $this->sms->isConfigured()) {
+            $this->sms->sendCampaignApproved(
+                $creator['phone'],
+                $creator['name'],
+                $campaign['title'],
+                $campaign['slug'] ?? ''
+            );
+        }
+
+        return $emailResult;
+    }
+
+    /**
+     * Notifica criador que a campanha foi rejeitada (email + SMS)
+     *
+     * @param array       $campaign Dados da campanha
+     * @param array       $creator  Dados do criador (email, name, phone)
+     * @param string|null $reason   Motivo da rejeição
+     */
+    public function sendCampaignRejectedNotification(array $campaign, array $creator, ?string $reason = null): bool
+    {
+        // Email
+        try {
+            $this->email->setFrom($this->config->fromEmail, $this->config->fromName);
+            $this->email->setTo($creator['email']);
+            $this->email->setSubject('Campanha Reprovada - DoarFazBem');
+
+            $message = view('emails/campaign_rejected', [
+                'campaign' => $campaign,
+                'creator'  => $creator,
+                'reason'   => $reason,
+            ]);
+
+            $this->email->setMessage($message);
+            $this->email->setMailType('html');
+            $emailResult = $this->email->send();
+        } catch (\Exception $e) {
+            log_message('error', 'Erro ao enviar email campanha rejeitada: ' . $e->getMessage());
+            $emailResult = false;
+        }
+
+        // SMS de campanha rejeitada
+        if (!empty($creator['phone']) && $this->sms->isConfigured()) {
+            $this->sms->sendCampaignRejected(
+                $creator['phone'],
+                $creator['name'],
+                $campaign['title'],
+                $reason
+            );
+        }
+
+        return $emailResult;
     }
 
     /**
