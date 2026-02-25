@@ -22,7 +22,7 @@ class Donation extends Model
         'donor_email',
         'donor_cpf',
         'amount',
-        'payment_gateway_fee',
+        'gateway_fee',
         'platform_fee',
         'net_amount',
         'payment_method',
