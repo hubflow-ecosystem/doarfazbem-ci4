@@ -26,7 +26,6 @@ class DonationModel extends Model
         'amount',
         'platform_fee',
         'gateway_fee',
-        'status',
         'net_amount',
         'payment_method',
         'asaas_payment_id',
