@@ -13,7 +13,7 @@ if (!function_exists('verify_recaptcha')) {
      * @param float|null $minScore Score mínimo aceito (0.0 a 1.0). Null usa o padrão do config
      * @return bool True se verificação passou
      */
-    function verify_recaptcha(string $token, string $action = 'submit', ?float $minScore = null): bool
+    function verify_recaptcha(?string $token, string $action = 'submit', ?float $minScore = null): bool
     {
         $google = config('Google');
 
