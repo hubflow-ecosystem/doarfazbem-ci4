@@ -257,7 +257,7 @@
                         &copy; <?= date('Y') ?> DoarFazBem. Todos os direitos reservados.
                     </p>
                     <p class="mt-1">
-                        CNPJ: 00.000.000/0001-00
+                        CNPJ: 53.367.693/0001-11 &mdash; Itajaí, SC
                     </p>
                 </div>
 
