@@ -35,8 +35,10 @@ jobs:
 
             cd "$DEPLOY_PATH"
 
-            echo "--- Fazendo git pull ---"
-            git pull origin main
+            echo "--- Atualizando código (fetch + reset) ---"
+            git config --global --add safe.directory "$DEPLOY_PATH" 2>/dev/null || true
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "--- Instalando dependências PHP (sem dev) ---"
             composer install --no-dev --optimize-autoloader --no-interaction
