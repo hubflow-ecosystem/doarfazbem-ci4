@@ -9,7 +9,9 @@
   <meta name="description" content="<?= esc($description ?? 'Campanhas médicas 100% gratuitas. Sistema transparente e seguro.') ?>">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+  <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/favicon.png') ?>">
+  <link rel="icon" type="image/png" sizes="192x192" href="<?= base_url('assets/icons/icon-192x192.png') ?>">
+  <link rel="apple-touch-icon" href="<?= base_url('assets/icons/icon-192x192.png') ?>">
   <meta name="theme-color" content="#10B981">
 
   <!-- Tailwind CSS Compilado -->

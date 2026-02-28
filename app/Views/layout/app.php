@@ -10,30 +10,53 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- SEO Meta Tags -->
-    <title><?= esc($title ?? 'DoarFazBem - A plataforma de crowdfunding mais justa do Brasil') ?></title>
-    <meta name="description" content="<?= esc($description ?? 'Campanhas médicas 100% gratuitas. Apenas 2% para outras campanhas. Sistema transparente e seguro.') ?>">
-    <meta name="keywords" content="crowdfunding, doação, vaquinha online, campanhas sociais, campanhas médicas, crowdfunding brasil, doação online, vaquinha solidária">
+    <!-- SEO Meta Tags (Dinâmico via SeoMetaService) -->
+    <?php
+      $seoTitle = $seoMeta['title'] ?? $title ?? 'DoarFazBem - A plataforma de crowdfunding mais justa do Brasil';
+      $seoDescription = $seoMeta['description'] ?? $description ?? 'Campanhas médicas 100% gratuitas. Apenas 2% para outras campanhas. Sistema transparente e seguro.';
+      $seoKeywords = $seoMeta['keywords'] ?? 'crowdfunding, doação, vaquinha online, campanhas sociais, campanhas médicas, crowdfunding brasil, doação online, vaquinha solidária';
+      $seoImage = $seoMeta['image'] ?? base_url('assets/images/og-image.jpg');
+      $seoCanonical = $seoMeta['canonical'] ?? current_url();
+      $seoRobots = $seoMeta['robots'] ?? 'index, follow';
+      $seoOgType = $seoMeta['og_type'] ?? 'website';
+    ?>
+    <title><?= esc($seoTitle) ?></title>
+    <meta name="description" content="<?= esc($seoDescription) ?>">
+    <meta name="keywords" content="<?= esc($seoKeywords) ?>">
     <meta name="author" content="DoarFazBem">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="<?= esc($seoRobots) ?>">
     <meta name="language" content="pt-BR">
     <meta name="revisit-after" content="7 days">
     <meta name="rating" content="general">
-    <link rel="canonical" href="<?= current_url() ?>">
+    <link rel="canonical" href="<?= esc($seoCanonical) ?>">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?= current_url() ?>">
-    <meta property="og:title" content="<?= esc($title ?? 'DoarFazBem') ?>">
-    <meta property="og:description" content="<?= esc($description ?? 'A plataforma de crowdfunding mais justa do Brasil') ?>">
-    <meta property="og:image" content="<?= base_url('assets/images/og-image.jpg') ?>">
+    <meta property="og:type" content="<?= esc($seoOgType) ?>">
+    <meta property="og:url" content="<?= esc($seoCanonical) ?>">
+    <meta property="og:title" content="<?= esc($seoTitle) ?>">
+    <meta property="og:description" content="<?= esc($seoDescription) ?>">
+    <meta property="og:image" content="<?= esc($seoImage) ?>">
+    <meta property="og:site_name" content="DoarFazBem">
+    <meta property="og:locale" content="pt_BR">
+    <?php if (!empty($seoMeta['article_published'])): ?>
+    <meta property="article:published_time" content="<?= esc($seoMeta['article_published']) ?>">
+    <?php endif; ?>
+    <?php if (!empty($seoMeta['article_modified'])): ?>
+    <meta property="article:modified_time" content="<?= esc($seoMeta['article_modified']) ?>">
+    <?php endif; ?>
+    <?php if (!empty($seoMeta['article_author'])): ?>
+    <meta property="article:author" content="<?= esc($seoMeta['article_author']) ?>">
+    <?php endif; ?>
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="<?= current_url() ?>">
-    <meta name="twitter:title" content="<?= esc($title ?? 'DoarFazBem') ?>">
-    <meta name="twitter:description" content="<?= esc($description ?? 'A plataforma de crowdfunding mais justa do Brasil') ?>">
-    <meta name="twitter:image" content="<?= base_url('assets/images/og-image.jpg') ?>">
+    <meta name="twitter:url" content="<?= esc($seoCanonical) ?>">
+    <meta name="twitter:title" content="<?= esc($seoTitle) ?>">
+    <meta name="twitter:description" content="<?= esc($seoDescription) ?>">
+    <meta name="twitter:image" content="<?= esc($seoImage) ?>">
+
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="DoarFazBem Blog" href="<?= base_url('blog/feed') ?>"">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
@@ -101,7 +124,13 @@
         })(window,document,'script','dataLayer','GT-P8452X3');
     </script>
 
-    <!-- Schema.org Structured Data -->
+    <!-- Schema.org Structured Data (Organização - global) -->
+    <?php
+      // Usa SchemaMarkupService se disponível, senão Schema estático
+      if (!empty($schemaOrg)) {
+        echo $schemaOrg;
+      } else {
+    ?>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -123,6 +152,7 @@
         }
     }
     </script>
+    <?php } ?>
 
     <?php if (isset($additional_css)): ?>
         <?= $additional_css ?>
@@ -361,6 +391,24 @@
     ?>
         <?= view('components/raffle_banner') ?>
     <?php endif; ?>
+
+    <!-- Widget de Chat Alex — DoarFazBem (config padrão: recepção) -->
+    <!-- Views específicas (campanha/rifa) sobrescrevem via window.DoarFazBemChat antes desta tag -->
+    <script>
+        if (!window.DoarFazBemChat) {
+            window.DoarFazBemChat = {
+                agentId: 'doarfazbem-recepcao',
+                color: '#16a34a',
+                position: 'bottom-right',
+                title: 'Alex',
+                subtitle: '● Fale conosco',
+                lang: 'pt',
+                avatar: 'https://agents.hubflowai.com/avatars/alex.webp',
+                whatsappFallback: '5547996966724'
+            };
+        }
+    </script>
+    <script async src="https://agents.hubflowai.com/widget.js"></script>
 
 </body>
 </html>

@@ -34,13 +34,8 @@
 
             <!-- Logo -->
             <div class="flex-shrink-0">
-                <a href="<?= base_url('/') ?>" class="flex items-center space-x-2">
-                    <svg class="w-8 h-8 text-emerald-500" viewBox="0 0 40 40" fill="currentColor">
-                        <path d="M20 35.5c-1.1 0-2.1-.4-2.9-1.1L6.8 24.3c-3.9-3.8-3.9-10 0-13.8 1.9-1.8 4.4-2.8 7-2.8s5.1 1 7 2.8l-.8.8.8-.8c1.9-1.8 4.4-2.8 7-2.8s5.1 1 7 2.8c3.9 3.8 3.9 10 0 13.8L23 34.4c-.8.7-1.8 1.1-3 1.1z"/>
-                        <circle cx="20" cy="20" r="6" fill="white"/>
-                        <path d="M20 17v6M17 20h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <span class="text-xl font-bold text-gray-900">Doar<span class="text-emerald-500">FazBem</span></span>
+                <a href="<?= base_url('/') ?>" class="flex items-center">
+                    <img src="<?= base_url('assets/images/Logo-doarfazbem-transparente.png') ?>" alt="DoarFazBem" class="h-10">
                 </a>
             </div>
 

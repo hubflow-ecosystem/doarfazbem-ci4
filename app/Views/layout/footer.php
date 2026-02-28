@@ -31,9 +31,8 @@
 
             <!-- Coluna 1: Logo e Descricao -->
             <div class="col-span-2 md:col-span-3 lg:col-span-2">
-                <div class="flex items-center space-x-2 mb-4">
-                    <i class="fas fa-heart text-primary-500 text-2xl"></i>
-                    <span class="text-xl font-bold">DoarFazBem</span>
+                <div class="flex items-center mb-4">
+                    <img src="<?= base_url('assets/images/Logo-doarfazbem-branco.png') ?>" alt="DoarFazBem" class="h-10">
                 </div>
                 <p class="text-gray-400 text-sm leading-relaxed mb-4">
                     A plataforma de crowdfunding mais justa do Brasil. Campanhas medicas 100% gratuitas e apenas 2% de taxa para todas as outras categorias.

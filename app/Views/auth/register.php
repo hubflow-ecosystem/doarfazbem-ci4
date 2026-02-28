@@ -10,9 +10,9 @@
         <!-- Cabeçalho -->
         <div class="text-center">
             <div class="flex justify-center">
-                <i class="fas fa-heart text-primary-500 text-6xl"></i>
+                <img src="<?= base_url('assets/images/Logo-favicon-doarfazbem-transparente.png') ?>" alt="DoarFazBem" class="h-20 w-20 object-contain">
             </div>
-            <h2 class="mt-6 text-3xl font-bold text-gray-900">
+            <h2 class="mt-4 text-3xl font-bold text-gray-900">
                 Crie sua conta
             </h2>
             <p class="mt-2 text-sm text-gray-600">

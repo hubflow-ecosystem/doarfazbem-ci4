@@ -69,14 +69,11 @@
         .logo-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
+        }
+        .logo-icon img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
         }
 
         .logo-text h1 {
@@ -285,7 +282,9 @@
     <div class="receipt-container">
         <div class="header">
             <div class="logo">
-                <div class="logo-icon">N</div>
+                <div class="logo-icon">
+                    <img src="<?= base_url('assets/images/Logo-favicon-doarfazbem.png') ?>" alt="DoarFazBem">
+                </div>
                 <div class="logo-text">
                     <h1>Números da Sorte</h1>
                     <p>DoarFazBem - Crowdfunding Solidário</p>

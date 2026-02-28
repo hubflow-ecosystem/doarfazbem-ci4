@@ -62,11 +62,8 @@
 
       <!-- Logo -->
       <div class="animate-fade-up">
-        <a href="<?= base_url() ?>" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-all">
-            <i class="fas fa-heart text-white text-lg"></i>
-          </div>
-          <span class="text-white font-bold text-xl tracking-tight">DoarFazBem</span>
+        <a href="<?= base_url() ?>" class="inline-block">
+          <img src="<?= base_url('assets/images/Logo-doarfazbem-branco.png') ?>" alt="DoarFazBem" class="h-12">
         </a>
       </div>
 
@@ -151,11 +148,8 @@
 
       <!-- Logo mobile (aparece só em telas pequenas) -->
       <div class="lg:hidden flex items-center justify-center mb-8">
-        <a href="<?= base_url() ?>" class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
-            <i class="fas fa-heart text-white text-lg"></i>
-          </div>
-          <span class="text-gray-800 font-bold text-xl tracking-tight">DoarFazBem</span>
+        <a href="<?= base_url() ?>">
+          <img src="<?= base_url('assets/images/Logo-doarfazbem-transparente.png') ?>" alt="DoarFazBem" class="h-12">
         </a>
       </div>
 
