@@ -477,4 +477,24 @@ function rafflePurchaseForm() {
 }
 </script>
 
+<!-- Widget Alex: abre direto no agente de rifas com contexto da rifa -->
+<script>
+    window.DoarFazBemChat = {
+        agentId: 'doarfazbem-rifas',
+        color: '#7c3aed',
+        position: 'bottom-right',
+        title: 'Alex',
+        subtitle: '🎁 Compre suas cotas!',
+        lang: 'pt',
+        avatar: 'https://agents.hubflowai.com/avatars/alex.png',
+        whatsappFallback: '5547992147138',
+        welcome: 'Olá! 🎁 Você está na rifa "<?= esc($raffle['title'] ?? '') ?>". Posso te mostrar os pacotes de cotas e gerar o PIX na hora! Quantas cotas você quer comprar?',
+        context: {
+            page: 'raffle',
+            raffleSlug: '<?= esc($raffle['slug'] ?? '') ?>',
+            raffleTitle: '<?= esc($raffle['title'] ?? '') ?>'
+        }
+    };
+</script>
+
 <?= $this->endSection() ?>

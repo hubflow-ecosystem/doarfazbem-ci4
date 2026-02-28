@@ -318,6 +318,47 @@
     </div>
 </div>
 
+<!-- Artigos Relacionados do Blog -->
+<?php if (!empty($relatedBlogPosts)): ?>
+<div class="bg-gray-50 py-12">
+  <div class="container-custom">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+      <i class="fas fa-newspaper text-emerald-500 mr-2"></i>Artigos Relacionados
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <?php foreach ($relatedBlogPosts as $bp): ?>
+      <a href="<?= base_url('blog/' . $bp['slug']) ?>" class="group bg-white rounded-xl shadow-sm border hover:shadow-md transition overflow-hidden">
+        <?php if (!empty($bp['featured_image'])): ?>
+        <div class="aspect-video overflow-hidden">
+          <img src="<?= esc($bp['featured_image']) ?>" alt="<?= esc($bp['title']) ?>"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+        </div>
+        <?php else: ?>
+        <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <i class="fas fa-file-alt text-gray-400 text-3xl"></i>
+        </div>
+        <?php endif; ?>
+        <div class="p-4">
+          <?php if (!empty($bp['category_name'])): ?>
+            <span class="inline-block px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 mb-2"><?= esc($bp['category_name']) ?></span>
+          <?php endif; ?>
+          <h3 class="font-semibold text-gray-900 group-hover:text-emerald-600 transition line-clamp-2 text-sm"><?= esc($bp['title']) ?></h3>
+          <p class="text-xs text-gray-500 mt-2 line-clamp-2"><?= esc($bp['excerpt'] ?? '') ?></p>
+          <div class="flex items-center text-xs text-gray-400 mt-3">
+            <i class="far fa-calendar mr-1"></i>
+            <span><?= !empty($bp['published_at']) ? date('d/m/Y', strtotime($bp['published_at'])) : '' ?></span>
+            <?php if (!empty($bp['reading_time'])): ?>
+              <span class="ml-3"><i class="far fa-clock mr-1"></i><?= $bp['reading_time'] ?> min</span>
+            <?php endif; ?>
+          </div>
+        </div>
+      </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
 <!-- Modal QR Code -->
 <div x-show="showQRCode" @click.self="showQRCode = false" x-transition
      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
@@ -342,6 +383,26 @@ function changeMedia(index, url) {
         thumb.classList.toggle('border-gray-200', i !== index);
     });
 }
+</script>
+
+<!-- Widget Alex: abre direto no agente de doações com contexto da campanha -->
+<script>
+    window.DoarFazBemChat = {
+        agentId: 'doarfazbem-doacoes',
+        color: '#16a34a',
+        position: 'bottom-right',
+        title: 'Alex',
+        subtitle: '💚 Doe agora!',
+        lang: 'pt',
+        avatar: 'https://agents.hubflowai.com/avatars/alex.png',
+        whatsappFallback: '5547992147138',
+        welcome: 'Olá! 💚 Você está na campanha "<?= esc($campaign['title'] ?? '') ?>". Posso te ajudar a fazer uma doação agora mesmo. Que valor você gostaria de contribuir?',
+        context: {
+            page: 'campaign',
+            campaignSlug: '<?= esc($campaign['slug'] ?? '') ?>',
+            campaignTitle: '<?= esc($campaign['title'] ?? '') ?>'
+        }
+    };
 </script>
 
 <?= $this->endSection() ?>
