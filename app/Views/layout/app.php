@@ -403,7 +403,7 @@
                 title: 'Alex',
                 subtitle: '● Fale conosco',
                 lang: 'pt',
-                avatar: 'https://agents.hubflowai.com/avatars/alex.webp',
+                avatar: '<?= base_url("assets/images/avatar-alex.png") ?>',
                 whatsappFallback: '5547996966724'
             };
         }
