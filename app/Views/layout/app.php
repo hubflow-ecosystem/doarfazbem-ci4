@@ -82,8 +82,8 @@
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
 
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+    <!-- Font Awesome 6 (local) -->
+    <link rel="stylesheet" href="<?= base_url('assets/fontawesome/css/all.min.css') ?>">
 
     <!-- Alpine.js Plugins -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
