@@ -201,8 +201,11 @@ class RaffleController extends BaseController
             $distributionModel->createDistributions($purchaseId, $campaignIds, $campaignAmount);
         }
 
-        // Gerar PIX via Mercado Pago (ou modo desenvolvimento)
-        $pixData = $this->generatePixPayment($purchaseId, $pricing['total_price'], $buyerEmail, $buyerCpf, $buyerName);
+        // Capturar Device Session ID do MercadoPago.JS V2
+        $mpDeviceSessionId = $this->request->getPost('mp_device_session_id') ?? '';
+
+        // Gerar pagamento PIX
+        $pixData = $this->generatePixPayment($purchaseId, $pricing['total_price'], $buyerEmail, $buyerCpf, $buyerName, $mpDeviceSessionId);
 
         if ($pixData) {
             $this->purchaseModel->update($purchaseId, [
@@ -212,7 +215,7 @@ class RaffleController extends BaseController
             ]);
         }
 
-        // Redirecionar para página de pagamento
+        // Redirecionar para página de pagamento PIX
         return redirect()->to("/rifas/pagamento/{$purchaseId}");
     }
 
@@ -473,7 +476,7 @@ class RaffleController extends BaseController
     /**
      * Gera pagamento PIX via Mercado Pago
      */
-    protected function generatePixPayment(int $purchaseId, float $amount, string $email, string $cpf, string $name): ?array
+    protected function generatePixPayment(int $purchaseId, float $amount, string $email, string $cpf, string $name, string $deviceSessionId = ''): ?array
     {
         $mpService = new \App\Libraries\MercadoPagoService();
 
@@ -484,6 +487,8 @@ class RaffleController extends BaseController
             'name' => $name,
             'description' => "Numeros da Sorte - Compra #{$purchaseId}",
             'external_reference' => "raffle_purchase_{$purchaseId}",
+            'purchase_id' => $purchaseId,
+            'device_session_id' => $deviceSessionId,
         ]);
 
         if (!$result['success']) {

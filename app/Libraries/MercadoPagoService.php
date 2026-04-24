@@ -3,26 +3,33 @@
 namespace App\Libraries;
 
 use Config\MercadoPago;
+use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Exceptions\MPApiException;
 
 /**
  * Servico de integracao com Mercado Pago
+ * Usa SDK oficial mercadopago/dx-php v3
  * Foco em pagamentos PIX para o sistema de rifas
  */
 class MercadoPagoService
 {
     protected MercadoPago $config;
     protected string $accessToken;
-    protected string $apiUrl;
 
     public function __construct()
     {
         $this->config = config('MercadoPago');
         $this->accessToken = $this->config->getAccessToken();
-        $this->apiUrl = $this->config->apiUrl;
+
+        // Configurar SDK oficial
+        MercadoPagoConfig::setAccessToken($this->accessToken);
+        MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
     }
 
     /**
-     * Cria pagamento PIX
+     * Cria pagamento PIX usando SDK oficial
      */
     public function createPixPayment(array $data): array
     {
@@ -32,46 +39,99 @@ class MercadoPagoService
             return $this->createDevelopmentPayment($data);
         }
 
-        $payload = [
+        $firstName = $this->getFirstName($data['name']);
+        $lastName = $this->getLastName($data['name']);
+        $cpfClean = preg_replace('/[^0-9]/', '', $data['cpf']);
+
+        $request = [
             'transaction_amount' => (float) $data['amount'],
             'description' => $data['description'] ?? 'Numeros da Sorte - DoarFazBem',
             'payment_method_id' => 'pix',
+            'statement_descriptor' => 'DOARFAZBEM',
+            'external_reference' => $data['external_reference'] ?? null,
+            'notification_url' => base_url('webhook/mercadopago/rifas'),
+            'date_of_expiration' => (new \DateTime('+' . $this->config->pixExpirationMinutes . ' minutes', new \DateTimeZone('America/Sao_Paulo')))->format('Y-m-d\TH:i:s.vP'),
             'payer' => [
                 'email' => $data['email'],
-                'first_name' => $this->getFirstName($data['name']),
-                'last_name' => $this->getLastName($data['name']),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'identification' => [
                     'type' => 'CPF',
-                    'number' => preg_replace('/[^0-9]/', '', $data['cpf']),
+                    'number' => $cpfClean,
                 ],
             ],
-            'date_of_expiration' => date('c', strtotime('+' . $this->config->pixExpirationMinutes . ' minutes')),
-            'notification_url' => base_url('webhook/mercadopago/rifas'),
-            'external_reference' => $data['external_reference'] ?? null,
+            'metadata' => [
+                'platform' => 'doarfazbem',
+                'purchase_id' => $data['purchase_id'] ?? null,
+                'raffle_id' => $data['raffle_id'] ?? null,
+            ],
+            'additional_info' => [
+                'items' => [
+                    [
+                        'id' => $data['external_reference'] ?? 'raffle_item',
+                        'title' => $data['description'] ?? 'Numero da Sorte',
+                        'description' => 'Numero da Sorte - Rifa Solidaria DoarFazBem',
+                        'category_id' => 'donations',
+                        'quantity' => (int) ($data['quantity'] ?? 1),
+                        'unit_price' => (float) $data['amount'],
+                    ],
+                ],
+                'payer' => [
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                ],
+            ],
         ];
 
-        $response = $this->request('POST', '/v1/payments', $payload);
+        try {
+            $client = new PaymentClient();
+            $requestOptions = new RequestOptions($this->accessToken);
 
-        if (isset($response['error'])) {
-            log_message('error', 'MercadoPago PIX Error: ' . json_encode($response));
+            // Headers customizados para certificacao de qualidade
+            $customHeaders = [
+                'X-Idempotency-Key: ' . uniqid('mp_', true),
+            ];
+
+            // Device Session ID do MercadoPago.JS V2 (certificacao: Identificador do dispositivo)
+            $deviceSessionId = $data['device_session_id'] ?? '';
+            if (!empty($deviceSessionId)) {
+                $customHeaders[] = 'X-meli-session-id: ' . $deviceSessionId;
+            }
+
+            $requestOptions->setCustomHeaders($customHeaders);
+
+            $payment = $client->create($request, $requestOptions);
+
+            return [
+                'success' => true,
+                'payment_id' => (string) $payment->id,
+                'status' => $payment->status,
+                'pix_code' => $payment->point_of_interaction->transaction_data->qr_code ?? '',
+                'pix_qrcode_base64' => $payment->point_of_interaction->transaction_data->qr_code_base64 ?? '',
+                'expiration_date' => $payment->date_of_expiration ?? null,
+            ];
+        } catch (MPApiException $e) {
+            $apiResponse = $e->getApiResponse();
+            $rawContent = $apiResponse ? $apiResponse->getContent() : 'Erro desconhecido';
+            $content = is_array($rawContent) ? json_encode($rawContent) : $rawContent;
+            log_message('error', 'MercadoPago SDK PIX Error: ' . $content);
+
             return [
                 'success' => false,
-                'error' => $response['message'] ?? 'Erro ao criar pagamento PIX',
+                'error' => 'Erro ao criar pagamento PIX: ' . $content,
+            ];
+        } catch (\Exception $e) {
+            log_message('error', 'MercadoPago SDK Exception: ' . $e->getMessage());
+
+            return [
+                'success' => false,
+                'error' => 'Erro ao criar pagamento PIX',
             ];
         }
-
-        return [
-            'success' => true,
-            'payment_id' => (string) $response['id'],
-            'status' => $response['status'],
-            'pix_code' => $response['point_of_interaction']['transaction_data']['qr_code'] ?? '',
-            'pix_qrcode_base64' => $response['point_of_interaction']['transaction_data']['qr_code_base64'] ?? '',
-            'expiration_date' => $response['date_of_expiration'] ?? null,
-        ];
     }
 
     /**
-     * Consulta status de um pagamento
+     * Consulta status de um pagamento usando SDK oficial
      */
     public function getPaymentStatus(string $paymentId): array
     {
@@ -79,23 +139,34 @@ class MercadoPagoService
             return ['status' => 'pending', 'development_mode' => true];
         }
 
-        $response = $this->request('GET', "/v1/payments/{$paymentId}");
+        try {
+            $client = new PaymentClient();
+            $payment = $client->get((int) $paymentId);
 
-        if (isset($response['error'])) {
+            return [
+                'success' => true,
+                'status' => $payment->status,
+                'status_detail' => $payment->status_detail ?? null,
+                'date_approved' => $payment->date_approved ?? null,
+                'transaction_amount' => $payment->transaction_amount ?? 0,
+                'fee_details' => $payment->fee_details ?? [],
+            ];
+        } catch (MPApiException $e) {
+            $content = $e->getApiResponse() ? $e->getApiResponse()->getContent() : $e->getMessage();
+            log_message('error', "MercadoPago SDK Get Error: {$content}");
+
             return [
                 'success' => false,
-                'error' => $response['message'] ?? 'Erro ao consultar pagamento',
+                'error' => 'Erro ao consultar pagamento',
+            ];
+        } catch (\Exception $e) {
+            log_message('error', 'MercadoPago SDK Exception: ' . $e->getMessage());
+
+            return [
+                'success' => false,
+                'error' => 'Erro ao consultar pagamento',
             ];
         }
-
-        return [
-            'success' => true,
-            'status' => $response['status'],
-            'status_detail' => $response['status_detail'] ?? null,
-            'date_approved' => $response['date_approved'] ?? null,
-            'transaction_amount' => $response['transaction_amount'] ?? 0,
-            'fee_details' => $response['fee_details'] ?? [],
-        ];
     }
 
     /**
@@ -103,7 +174,6 @@ class MercadoPagoService
      */
     public function processWebhook(array $data): array
     {
-        $type = $data['type'] ?? $data['action'] ?? null;
         $paymentId = $data['data']['id'] ?? null;
 
         if (!$paymentId) {
@@ -123,54 +193,6 @@ class MercadoPagoService
             'status' => $payment['status'],
             'is_approved' => $payment['status'] === 'approved',
         ];
-    }
-
-    /**
-     * Faz requisicao para API do Mercado Pago
-     */
-    protected function request(string $method, string $endpoint, ?array $data = null): array
-    {
-        $url = $this->apiUrl . $endpoint;
-
-        $headers = [
-            'Authorization: Bearer ' . $this->accessToken,
-            'Content-Type: application/json',
-            'X-Idempotency-Key: ' . uniqid('mp_', true),
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-        if ($method === 'POST') {
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        }
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            log_message('error', "MercadoPago cURL Error: {$error}");
-            return ['error' => true, 'message' => $error];
-        }
-
-        $result = json_decode($response, true);
-
-        if ($httpCode >= 400) {
-            log_message('error', "MercadoPago API Error [{$httpCode}]: {$response}");
-            return [
-                'error' => true,
-                'message' => $result['message'] ?? 'Erro na API do Mercado Pago',
-                'cause' => $result['cause'] ?? [],
-            ];
-        }
-
-        return $result;
     }
 
     /**

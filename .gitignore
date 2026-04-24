@@ -76,3 +76,6 @@ phpunit.xml
 # Backup files
 *.sql
 *.backup
+
+# Debugbar files (volatile, runtime only)
+writable/debugbar/*.json

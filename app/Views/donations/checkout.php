@@ -1,5 +1,18 @@
 <?= $this->extend('layout/app') ?>
 
+<?= $this->section('head') ?>
+<!-- MercadoPago.JS V2 SDK - Certificacao de qualidade -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mpPublicKey = '<?= esc(config('MercadoPago')->getPublicKey()) ?>';
+    if (mpPublicKey && typeof MercadoPago !== 'undefined') {
+        window.mpInstance = new MercadoPago(mpPublicKey, { locale: 'pt-BR' });
+    }
+});
+</script>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
 <div class="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 py-12"

@@ -332,12 +332,93 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->get('withdrawals/(:num)', 'WithdrawalController::adminDetail/$1');
     $routes->post('withdrawals/approve/(:num)', 'WithdrawalController::approve/$1');
     $routes->post('withdrawals/reject/(:num)', 'WithdrawalController::reject/$1');
+
+    // ===============================
+    // DASHBOARD FINANCEIRO
+    // ===============================
+    $routes->get('financial', 'Admin\FinancialDashboardController::index');
+    $routes->get('financial/api-kpis', 'Admin\FinancialDashboardController::apiKPIs');
+    $routes->get('financial/export/(:alpha)', 'Admin\FinancialDashboardController::export/$1');
+
+    // ===============================
+    // BLOG ADMIN
+    // ===============================
+    $routes->get('blog', 'Admin\BlogAdminController::index');
+    $routes->get('blog/create', 'Admin\BlogAdminController::create');
+    $routes->post('blog/store', 'Admin\BlogAdminController::store');
+    $routes->get('blog/edit/(:num)', 'Admin\BlogAdminController::edit/$1');
+    $routes->post('blog/update/(:num)', 'Admin\BlogAdminController::update/$1');
+    $routes->post('blog/delete/(:num)', 'Admin\BlogAdminController::delete/$1');
+    $routes->post('blog/duplicate/(:num)', 'Admin\BlogAdminController::duplicate/$1');
+    $routes->post('blog/upload-image', 'Admin\BlogAdminController::uploadImage');
+    $routes->get('blog/categories', 'Admin\BlogAdminController::categories');
+    $routes->post('blog/categories/save', 'Admin\BlogAdminController::saveCategory');
+
+    // ===============================
+    // LINKAGEM INTERNA
+    // ===============================
+    $routes->get('internal-links', 'Admin\InternalLinksController::index');
+    $routes->post('internal-links/save', 'Admin\InternalLinksController::save');
+    $routes->post('internal-links/delete/(:num)', 'Admin\InternalLinksController::delete/$1');
+    $routes->post('internal-links/toggle/(:num)', 'Admin\InternalLinksController::toggleActive/$1');
+    $routes->post('internal-links/preview', 'Admin\InternalLinksController::previewContent');
+    $routes->get('internal-links/category-map', 'Admin\InternalLinksController::categoryMap');
+    $routes->post('internal-links/category-map/save', 'Admin\InternalLinksController::saveCategoryMap');
+
+    // ===============================
+    // SEO DASHBOARD (Meta, FAQs, 404s, Redirects)
+    // ===============================
+    $routes->get('seo', 'Admin\SeoDashboardController::index');
+    $routes->get('seo/monitor-404', 'Admin\SeoDashboardController::monitor404');
+    $routes->post('seo/action-404', 'Admin\SeoDashboardController::action404');
+    $routes->get('seo/redirects', 'Admin\SeoDashboardController::redirects');
+    $routes->post('seo/redirects/save', 'Admin\SeoDashboardController::saveRedirect');
+    $routes->get('seo/faqs', 'Admin\SeoDashboardController::faqs');
+    $routes->post('seo/faqs/save', 'Admin\SeoDashboardController::saveFaq');
+
+    // ===============================
+    // MOTOR SEO AUTÔNOMO
+    // ===============================
+    $routes->get('seo-engine', 'Admin\SeoEngineController::index');
+    $routes->get('seo-engine/opportunities', 'Admin\SeoEngineController::opportunities');
+    $routes->get('seo-engine/actions', 'Admin\SeoEngineController::actionLog');
+    $routes->get('seo-engine/config', 'Admin\SeoEngineController::config');
+    $routes->post('seo-engine/config', 'Admin\SeoEngineController::saveConfig');
+    $routes->post('seo-engine/test-gsc', 'Admin\SeoEngineController::testGsc');
+    $routes->post('seo-engine/test-bing', 'Admin\SeoEngineController::testBing');
+    $routes->post('seo-engine/test-grok', 'Admin\SeoEngineController::testGrok');
+    $routes->post('seo-engine/run-collect', 'Admin\SeoEngineController::runCollect');
+    $routes->post('seo-engine/run-analyze', 'Admin\SeoEngineController::runAnalyze');
+    $routes->post('seo-engine/dismiss', 'Admin\SeoEngineController::dismiss');
+    $routes->get('seo-engine/api/daily-stats', 'Admin\SeoEngineController::dailyStats');
 });
 
 // =====================================================
 // WEBHOOKS (Sem filtro de autenticação - ja definidos acima)
 // =====================================================
 // Nota: webhook/asaas esta definido na linha 161 usando WebhookController
+
+// =====================================================
+// BLOG PÚBLICO
+// =====================================================
+
+$routes->get('blog', 'BlogController::index');
+$routes->get('blog/busca', 'BlogController::search');
+$routes->get('blog/feed.xml', 'BlogController::feed');
+$routes->get('blog/sitemap.xml', 'BlogController::sitemap');
+$routes->get('blog/categoria/(:segment)', 'BlogController::category/$1');
+$routes->get('blog/(:segment)', 'BlogController::view/$1');
+
+// =====================================================
+// SITEMAP E SEO PÚBLICO
+// =====================================================
+
+$routes->get('sitemap.xml', 'SitemapController::xml');
+$routes->get('sitemap-pages.xml', 'SitemapController::sitemapPages');
+$routes->get('sitemap-campaigns.xml', 'SitemapController::sitemapCampaigns');
+$routes->get('mapa-do-site', 'SitemapController::mapaSite');
+$routes->get('llms.txt', 'SitemapController::llmsTxt');
+$routes->get('robots.txt', 'SitemapController::robotsTxt');
 
 // =====================================================
 // TESTE DE EMAIL (APENAS EM DESENVOLVIMENTO)

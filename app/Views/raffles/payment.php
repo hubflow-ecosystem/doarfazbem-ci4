@@ -1,5 +1,10 @@
 <?= $this->extend('layout/app') ?>
 
+<?= $this->section('head') ?>
+<!-- MercadoPago.JS V2 SDK - Obrigatorio para certificacao de qualidade -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
 <div class="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 py-12"
@@ -150,6 +155,9 @@
                     </ol>
                 </div>
 
+                <!-- MercadoPago Status Screen Brick (PCI Compliance) -->
+                <div id="mp-status-screen" class="mt-6"></div>
+
                 <!-- Status de verificacao -->
                 <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-center"
                      x-show="!paymentConfirmed">
@@ -178,6 +186,44 @@
 
     </div>
 </div>
+
+<!-- Inicializacao do MercadoPago.JS V2 SDK na pagina de pagamento -->
+<script>
+(function() {
+    const mpPublicKey = '<?= esc(config('MercadoPago')->getPublicKey()) ?>';
+    if (mpPublicKey && typeof MercadoPago !== 'undefined') {
+        const mp = new MercadoPago(mpPublicKey, {
+            locale: 'pt-BR'
+        });
+
+        // Inicializar Status Screen Brick para acompanhamento do pagamento
+        <?php if (!empty($purchase['payment_id']) && strpos($purchase['payment_id'], 'DEV_') !== 0): ?>
+        if (mp.bricks) {
+            const bricksBuilder = mp.bricks();
+            const statusContainer = document.getElementById('mp-status-screen');
+            if (statusContainer && bricksBuilder) {
+                bricksBuilder.create('statusScreen', 'mp-status-screen', {
+                    initialization: {
+                        paymentId: '<?= esc($purchase['payment_id']) ?>'
+                    },
+                    customization: {
+                        visual: {
+                            hideStatusDetails: true,
+                            hideTransactionDate: true,
+                            style: {
+                                theme: 'default'
+                            }
+                        }
+                    }
+                }).catch(function(err) {
+                    console.log('Status Screen Brick opcional:', err);
+                });
+            }
+        }
+        <?php endif; ?>
+    }
+})();
+</script>
 
 <script>
 function paymentTimer(initialSeconds) {

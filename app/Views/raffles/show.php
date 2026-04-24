@@ -1,5 +1,10 @@
 <?= $this->extend('layout/app') ?>
 
+<?= $this->section('head') ?>
+<!-- MercadoPago.JS V2 SDK - Obrigatorio para certificacao de qualidade -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
 <div class="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900">
@@ -249,6 +254,8 @@
                         <?= csrf_field() ?>
                         <input type="hidden" name="raffle_id" value="<?= $raffle['id'] ?>">
                         <input type="hidden" name="quantity" x-model="quantity">
+                        <!-- Device ID do MercadoPago.JS V2 para certificacao -->
+                        <input type="hidden" name="mp_device_session_id" id="mp_device_session_id" value="">
                         <template x-for="cid in selectedCampaigns" :key="cid">
                             <input type="hidden" name="campaigns[]" :value="cid">
                         </template>
@@ -304,7 +311,7 @@
                             </div>
                         </div>
 
-                        <!-- Botao de Compra -->
+                        <!-- Botao de Compra PIX -->
                         <button type="submit"
                                 class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-lg rounded-xl hover:from-purple-700 hover:to-indigo-700 transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-bolt mr-2"></i>
@@ -475,6 +482,39 @@ function rafflePurchaseForm() {
         }
     };
 }
+</script>
+
+<!-- Inicializacao do MercadoPago.JS V2 SDK -->
+<script>
+(function() {
+    // Inicializar SDK com Public Key de producao
+    const mpPublicKey = '<?= esc(config('MercadoPago')->getPublicKey()) ?>';
+    if (mpPublicKey && typeof MercadoPago !== 'undefined') {
+        const mp = new MercadoPago(mpPublicKey, {
+            locale: 'pt-BR'
+        });
+
+        // Capturar Device Session ID para certificacao de qualidade
+        // O SDK gera automaticamente um identificador de dispositivo
+        const deviceSessionId = mp.getDeviceId ? mp.getDeviceId() : null;
+        if (deviceSessionId) {
+            document.getElementById('mp_device_session_id').value = deviceSessionId;
+        }
+
+        // Fallback: capturar do campo gerado pelo SDK
+        setTimeout(function() {
+            const mpDeviceEl = document.getElementById('mp_device_session_id');
+            if (mpDeviceEl && !mpDeviceEl.value) {
+                // O SDK injeta o device_id no DOM
+                const deviceInput = document.querySelector('input[name="mercadopago-device-session-id"]') ||
+                                    document.getElementById('deviceId');
+                if (deviceInput) {
+                    mpDeviceEl.value = deviceInput.value;
+                }
+            }
+        }, 2000);
+    }
+})();
 </script>
 
 <!-- Widget Alex: abre direto no agente de rifas com contexto da rifa -->
